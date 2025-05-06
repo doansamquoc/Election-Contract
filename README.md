@@ -1,17 +1,47 @@
-# Sample Hardhat Project
+# Election Contract Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+> This is sub-project :D
 
-Try running some of the following tasks:
+**Visit main project [votely](https://github.com/quocdoansam/votely)**
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
+### Getting started
+
+**1. Clone this repository**
+
+```bash
+https://github.com/quocdoansam/Election-Contract.git
 ```
 
-```Deployed
+**2. After cloned**
+
+- Init project
+
+```bash
+npm install
+```
+
+- Install dotenv
+
+```bash
+npm install --save dotenv ethers
+```
+
+- Add _.env_ file (use your private key and RPC URL)
+  ![Oops](/assets/1.png)
+
+**2. Start deploy**
+
+```bash
+npx hardhat run scripts/deploy.ts --network sepolia
+```
+
+If the result is like this. Ok, we have succeeded!
+![Oops](/assets/2.png)
+
+### Deployed
+
+```bash
 0xceFA7E3a79a00D83B7DBb1eE174d014D50486fcC
 ```
+
+**Thanks for reading :D**
