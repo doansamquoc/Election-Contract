@@ -8,15 +8,16 @@ contract ElectionContract {
         address creator;
         uint256 startTime;
         uint256 endTime;
+        uint256 createdAt;
         string title;
         string desc;
         bool exists;
-        bool isPrivate;
     }
 
     mapping(bytes32 => Election) public elections;
     mapping(bytes32 => string[]) public options;
     mapping(bytes32 => uint256[]) public votes;
+    mapping(bytes32 => mapping(address => bool)) public hasVoted;
 
     bytes32[] public electionIds;
     bytes32[] public notStartedElections;
@@ -28,8 +29,7 @@ contract ElectionContract {
         uint256 endTime,
         string memory title,
         string memory desc,
-        string[] memory _options,
-        bool isPrivate
+        string[] memory _options
     ) public returns (bytes32) {
         require(startTime < endTime, "Invalid time range");
         require(_options.length >= 2, "Need at least two options");
@@ -42,10 +42,10 @@ contract ElectionContract {
         newElection.creator = msg.sender;
         newElection.startTime = startTime;
         newElection.endTime = endTime;
+        newElection.createdAt = block.timestamp;
         newElection.title = title;
         newElection.desc = desc;
         newElection.exists = true;
-        newElection.isPrivate = isPrivate;
 
         options[electionId] = _options;
         votes[electionId] = new uint256[](_options.length);
@@ -73,10 +73,10 @@ contract ElectionContract {
             address creator,
             uint256 startTime,
             uint256 endTime,
+            uint256 createdAt,
             string memory title,
             string memory desc,
-            string[] memory _options,
-            bool isPrivate
+            string[] memory _options
         )
     {
         Election storage e = elections[electionId];
@@ -85,27 +85,25 @@ contract ElectionContract {
             e.creator,
             e.startTime,
             e.endTime,
+            e.createdAt,
             e.title,
             e.desc,
-            options[electionId],
-            e.isPrivate
+            options[electionId]
         );
     }
 
     function getElectionsByState(
         string memory state
     ) public view returns (bytes32[] memory) {
-        bytes32[] memory result;
-
         if (keccak256(abi.encodePacked(state)) == keccak256("notStarted")) {
-            result = notStartedElections;
+            return notStartedElections;
         } else if (keccak256(abi.encodePacked(state)) == keccak256("ongoing")) {
-            result = ongoingElections;
+            return ongoingElections;
         } else if (keccak256(abi.encodePacked(state)) == keccak256("ended")) {
-            result = endedElections;
+            return endedElections;
+        } else {
+            revert("Invalid state");
         }
-
-        return result;
     }
 
     function getResults(
@@ -121,8 +119,17 @@ contract ElectionContract {
         require(block.timestamp >= e.startTime, "Election not started");
         require(block.timestamp <= e.endTime, "Election ended");
         require(optionIndex < options[electionId].length, "Invalid option");
+        require(!hasVoted[electionId][msg.sender], "You have already voted");
 
         votes[electionId][optionIndex]++;
+        hasVoted[electionId][msg.sender] = true;
+    }
+
+    function hasUserVoted(
+        bytes32 electionId,
+        address user
+    ) public view returns (bool) {
+        return hasVoted[electionId][user];
     }
 
     // view-only getters for arrays by index

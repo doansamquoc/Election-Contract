@@ -44,4 +44,10 @@ If the result is like this. Ok, we have succeeded!
 0xceFA7E3a79a00D83B7DBb1eE174d014D50486fcC
 ```
 
+#### New
+
+```bash
+0x73Da440E88BFE68465c60c4F2A9aAb79Cd7871BF
+```
+
 **Thanks for reading :D**
