@@ -1,8 +1,6 @@
 # Election Contract Hardhat Project
 
-> This is sub-project :D
-
-**Visit main project [votely](https://github.com/quocdoansam/votely)**
+> [08-27-2025] This project has been closed and built for the purpose of learning.
 
 ### Getting started
 
